@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Segmentation Dashboard</title>
+  <style>
+    :root {
+      --bg-color: #f4f7f6;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+      --primary-color: #2a6f97;
+      --border-color: #e0e0e0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 20px;
+    }
+
+    header {
+      margin-bottom: 25px;
+    }
+
+    h1 {
+      margin: 0 0 10px 0;
+      color: var(--primary-color);
+    }
+
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .controls input, .controls select {
+      padding: 10px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .controls input {
+      flex-grow: 1;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .segment-card {
+      background-color: var(--card-bg);
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .segment-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    .segment-title {
+      font-size: 1.25rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      color: white;
+    }
+
+    .badge-vip { background-color: #2b9348; }
+    .badge-at-risk { background-color: #e63946; }
+    .badge-new { background-color: #48cae4; }
+    .badge-regular { background-color: #ffb703; color: #000; }
+
+    .metrics {
+      margin: 15px 0;
+      font-size: 0.9rem;
+    }
+
+    .metrics div {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .action-btn {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background-color 0.2s;
+    }
+
+    .action-btn:hover {
+      background-color: #014f86;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>E-Commerce Customer Segmentation</h1>
+    <p>Analyze RFM metrics (Recency, Frequency, Monetary) to target campaigns.</p>
+  </header>
+
+  <section class="controls">
+    <input type="text" id="searchInput" placeholder="Search segment or strategy..." onkeyup="filterSegments()">
+    <select id="filterSelect" onchange="filterSegments()">
+      <option value="all">All Segments</option>
+      <option value="vip">High Value (VIP)</option>
+      <option value="at-risk">At-Risk</option>
+      <option value="regular">Regular</option>
+      <option value="new">New Customers</option>
+    </select>
+  </section>
+
+  <main class="grid-container" id="segmentGrid">
+
+    <article class="segment-card" data-category="vip">
+      <div class="segment-title">
+        <span>Champions</span>
+        <span class="badge badge-vip">VIP</span>
+      </div>
+      <p>Bought recently, buy often, and spend the most.</p>
+      <div class="metrics">
+        <div><span>Avg. Spend:</span> <strong>$1,250</strong></div>
+        <div><span>Purchase Freq:</span> <strong>12+/yr</strong></div>
+        <div><span>Segment Size:</span> <strong>15%</strong></div>
+      </div>
+      <button class="action-btn" onclick="triggerAction('Champions')">Launch Loyalty Offer</button>
+    </article>
+
+    <article class="segment-card" data-category="at-risk">
+      <div class="segment-title">
+        <span>At-Risk High Rollers</span>
+        <span class="badge badge-at-risk">At-Risk</span>
+      </div>
+      <p>Spent big money historically, but haven't purchased recently.</p>
+      <div class="metrics">
+        <div><span>Avg. Spend:</span> <strong>$980</strong></div>
+        <div><span>Purchase Freq:</span> <strong>8/yr</strong></div>
+        <div><span>Segment Size:</span> <strong>8%</strong></div>
+      </div>
+      <button class="action-btn" onclick="triggerAction('At-Risk High Rollers')">Send Win-Back Email</button>
+    </article>
+
+    <article class="segment-card" data-category="regular">
+      <div class="segment-title">
+        <span>Loyal Customers</span>
+        <span class="badge badge-regular">Regular</span>
+      </div>
+      <p>Buy regularly and respond well to promotions.</p>
+      <div class="metrics">
+        <div><span>Avg. Spend:</span> <strong>$450</strong></div>
+        <div><span>Purchase Freq:</span> <strong>6/yr</strong></div>
+        <div><span>Segment Size:</span> <strong>32%</strong></div>
+      </div>
+      <button class="action-btn" onclick="triggerAction('Loyal Customers')">Send Upsell Campaign</button>
+    </article>
+
+    <article class="segment-card" data-category="new">
+      <div class="segment-title">
+        <span>Recent Onboarded</span>
+        <span class="badge badge-new">New</span>
+      </div>
+      <p>Made their first purchase recently with moderate basket size.</p>
+      <div class="metrics">
+        <div><span>Avg. Spend:</span> <strong>$85</strong></div>
+        <div><span>Purchase Freq:</span> <strong>1/yr</strong></div>
+        <div><span>Segment Size:</span> <strong>20%</strong></div>
+      </div>
+      <button class="action-btn" onclick="triggerAction('Recent Onboarded')">Start Welcome Series</button>
+    </article>
+
+  </main>
+
+  <script>
+    function filterSegments() {
+      const searchVal = document.getElementById('searchInput').value.toLowerCase();
+      const filterVal = document.getElementById('filterSelect').value;
+      const cards = document.querySelectorAll('.segment-card');
+
+      cards.forEach(card => {
+        const title = card.querySelector('.segment-title').textContent.toLowerCase();
+        const category = card.getAttribute('data-category');
+
+        const matchesSearch = title.includes(searchVal);
+        const matchesCategory = (filterVal === 'all') || (category === filterVal);
+
+        if (matchesSearch && matchesCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function triggerAction(segmentName) {
+      alert(`Automated workflow initiated for segment: ${segmentName}`);
+    }
+  </script>
+
+</body>
+</html>
